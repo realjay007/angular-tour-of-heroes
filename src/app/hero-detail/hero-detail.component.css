@@ -1,0 +1,8 @@
+button.random {
+	margin: 16px;
+	cursor: pointer;
+}
+
+button.random:hover {
+	color: black;
+}
