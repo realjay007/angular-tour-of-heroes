@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
 
 import { Hero } from "../hero";
-import { HEROES } from "../mock-heroes";
 import { HeroService } from "../hero.service";
 
 @Component({
@@ -20,7 +19,11 @@ export class HeroDetailComponent implements OnInit {
 		private heroService: HeroService,
 		private location: Location,
 		private router: Router
-	) { }
+	) {
+		this.router.routeReuseStrategy.shouldReuseRoute = function() {
+			return false;
+		};
+	}
 
 	ngOnInit() {
 		this.getHero();
@@ -32,15 +35,28 @@ export class HeroDetailComponent implements OnInit {
 		.subscribe(hero => this.hero = hero);
 	}
 
+	save(): void {
+		this.heroService.updateHero(this.hero)
+		.subscribe(() => this.goBack());
+	}
+
 	randomHero() {
-		let randHero = HEROES[Math.floor(Math.random()*HEROES.length)];
-		this.router.navigate(["/detail", randHero.id]);
-		this.hero = randHero;
+		var randId = () => {
+			let min = 11, max = 21;
+			return Math.floor(Math.random() * (max - min) ) + min;
+		}
+		/* this.heroService.getHero(randId())
+		.subscribe((hero) => {
+			
+		}); */
+		this.router.navigate(["/detail", randId()])
+		
 		//this.router.navigate(["/dashboard"]);
 	}
 
 	goBack(): void {
 		this.location.back();
+
 	}
 
 }
